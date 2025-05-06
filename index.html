@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carte interactive de Caen</title>
+
+    <!-- CDN MaplibreGL JS -->
+    <script src="https://unpkg.com/maplibre-gl@^5.5.0/dist/maplibre-gl.js"></script>
+    <link href="https://unpkg.com/maplibre-gl@^5.5.0/dist/maplibre-gl.css" rel="stylesheet" />
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+        }
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .control-panel {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1;
+            background-color: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            min-width: 200px;
+        }
+        .title {
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 16px;
+        }
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .toggle-container label {
+            margin-left: 8px;
+            cursor: pointer;
+        }
+        .category-title {
+            font-weight: bold;
+            margin-top: 10px;
+            margin-bottom: 5px;
+            border-top: 1px solid #eee;
+            padding-top: 8px;
+        }
+        .popup-content {
+            max-width: 300px;
+        }
+        .popup-content h3 {
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+        .popup-content p {
+            margin-top: 5px;
+        }
+        .legend {
+            margin-top: 15px;
+            padding-top: 8px;
+            border-top: 1px solid #eee;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+            font-size: 12px;
+        }
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            margin-right: 5px;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div class="control-panel">
+        <div class="title">Points d'intérêt de Caen</div>
+        
+        <div class="category-title">Filtres par catégorie</div>
+        <div class="toggle-container">
+            <input type="checkbox" id="toggle-culture" checked>
+            <label for="toggle-culture">Culture</label>
+        </div>
+        <div class="toggle-container">
+            <input type="checkbox" id="toggle-education" checked>
+            <label for="toggle-education">Éducation</label>
+        </div>
+        <div class="toggle-container">
+            <input type="checkbox" id="toggle-commerce" checked>
+            <label for="toggle-commerce">Commerce</label>
+        </div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #E63946;"></div>
+                <span>Culture</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #4CAF50;"></div>
+                <span>Éducation</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #2196F3;"></div>
+                <span>Commerce</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Coordonnées du centre de Caen (Place Saint-Sauveur)
+        const caenCenter = [-.36, 49.183];
+        
+        // GeoJSON des points d'intérêt de Caen
+        const caenPOI = {
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 1,
+        "name": "Château de Caen",
+        "description": "Forteresse médiévale du XIe siècle qui abrite le musée de Normandie et le musée des Beaux-Arts de Caen.",
+        "category": "culture"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.36305, 49.18639]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 2,
+        "name": "Abbaye aux Hommes",
+        "description": "Abbaye bénédictine fondée par Guillaume le Conquérant au XIe siècle, aujourd'hui l'Hôtel de Ville de Caen.",
+        "category": "culture"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.37076, 49.18277]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 3,
+        "name": "Abbaye aux Dames",
+        "description": "Abbaye bénédictine fondée par Mathilde de Flandre au XIe siècle, siège du Conseil Régional de Normandie.",
+        "category": "culture"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.35431, 49.18944]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 4,
+        "name": "Mémorial de Caen",
+        "description": "Musée et mémorial consacré à la Seconde Guerre mondiale et à la Bataille de Normandie.",
+        "category": "culture"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.38941, 49.19778]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 5,
+        "name": "Théâtre de Caen",
+        "description": "Principal théâtre de la ville offrant une programmation variée d'opéras, ballets et concerts.",
+        "category": "culture"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.36534, 49.18243]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 6,
+        "name": "Le Dôme",
+        "description": "Centre culturel et scientifique proposant des expositions interactives et ateliers pédagogiques.",
+        "category": "culture"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.36198, 49.17963]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 7,
+        "name": "Église Saint-Pierre",
+        "description": "Église gothique flamboyant du XIIIe siècle avec sa tour-lanterne caractéristique.",
+        "category": "culture"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.36040, 49.18267]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 8,
+        "name": "FRAC Normandie",
+        "description": "Fonds Régional d'Art Contemporain présentant des expositions d'art contemporain.",
+        "category": "culture"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.35843, 49.17753]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 9,
+        "name": "Artothèque de Caen",
+        "description": "Espace d'exposition dédié à l'art contemporain, proposant également un service de prêt d'œuvres.",
+        "category": "culture"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.36196, 49.18369]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 10,
+        "name": "Bibliothèque Alexis de Tocqueville",
+        "description": "Bibliothèque municipale moderne au design contemporain proposant de vastes collections et espaces de travail.",
+        "category": "culture"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.36183, 49.18667]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 11,
+        "name": "Cinéma Lux",
+        "description": "Cinéma d'art et essai proposant des films indépendants et des rétrospectives.",
+        "category": "culture"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.36725, 49.18028]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 12,
+        "name": "Université de Caen Normandie - Campus 1",
+        "description": "Campus principal de l'Université de Caen, reconstruit après la Seconde Guerre mondiale.",
+        "category": "education"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.36645, 49.21303]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 13,
+        "name": "IUT de Caen",
+        "description": "Institut Universitaire de Technologie proposant des formations professionnalisantes.",
+        "category": "education"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.38507, 49.21244]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 14,
+        "name": "ENSICAEN",
+        "description": "École Nationale Supérieure d'Ingénieurs de Caen, spécialisée dans les domaines scientifiques et technologiques.",
+        "category": "education"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.36881, 49.21363]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 15,
+        "name": "Lycée Malherbe",
+        "description": "Lycée public fondé en 1804, l'un des plus anciens établissements d'enseignement secondaire de la ville.",
+        "category": "education"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.37266, 49.17783]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 16,
+        "name": "Lycée Victor Hugo",
+        "description": "Lycée public général et technologique, situé au cœur de la ville.",
+        "category": "education"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.35995, 49.19136]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 17,
+        "name": "Collège Pasteur",
+        "description": "Collège public situé dans le quartier du Calvaire Saint-Pierre.",
+        "category": "education"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.36940, 49.19761]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 18,
+        "name": "École primaire Jean Moulin",
+        "description": "École élémentaire publique du centre-ville.",
+        "category": "education"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.35760, 49.18450]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 19,
+        "name": "École Sainte-Thérèse",
+        "description": "École privée catholique dans le quartier de la Folie-Couvrechef.",
+        "category": "education"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.38200, 49.19650]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 20,
+        "name": "IAE Caen - École Universitaire de Management",
+        "description": "École de commerce et de management de l'Université de Caen.",
+        "category": "education"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.36505, 49.21280]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 21,
+        "name": "Centre Commercial Côte de Nacre",
+        "description": "Grand centre commercial avec hypermarché et nombreuses boutiques au nord de la ville.",
+        "category": "commerce"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.35548, 49.20503]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 22,
+        "name": "Centre Commercial Mondeville 2",
+        "description": "Important centre commercial de l'agglomération caennaise situé à Mondeville avec plus de 100 boutiques.",
+        "category": "commerce"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.32614, 49.17394]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 23,
+        "name": "Les Rives de l'Orne",
+        "description": "Centre commercial moderne près de la gare avec boutiques, restaurants et cinéma.",
+        "category": "commerce"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.35490, 49.18220]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 24,
+        "name": "Monoprix Saint-Pierre",
+        "description": "Grand magasin en centre-ville proposant alimentation, mode et décoration.",
+        "category": "commerce"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.36118, 49.18239]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 25,
+        "name": "Marché Saint-Sauveur",
+        "description": "Marché traditionnel se tenant sur la place Saint-Sauveur.",
+        "category": "commerce"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.36057, 49.18392]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 26,
+        "name": "Centre Commercial Paul Doumer",
+        "description": "Galerie marchande en centre-ville avec diverses boutiques.",
+        "category": "commerce"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.36297, 49.18140]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 27,
+        "name": "Zone Commerciale de Fleury-sur-Orne",
+        "description": "Zone commerciale au sud de Caen avec grandes enseignes et magasins spécialisés.",
+        "category": "commerce"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.38050, 49.15242]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 28,
+        "name": "Zénith de Caen",
+        "description": "Grande salle de spectacle pouvant accueillir jusqu'à 7.000 spectateurs pour des concerts et événements.",
+        "category": "culture"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.38760, 49.17760]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 29,
+        "name": "Parc Expo de Caen",
+        "description": "Espace d'exposition accueillant la Foire Internationale et divers salons professionnels.",
+        "category": "culture"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.38900, 49.17480]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 30,
+        "name": "ESAM - École Supérieure d'Arts & Médias",
+        "description": "École d'art publique formant aux métiers artistiques et du design.",
+        "category": "education"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-0.37170, 49.19030]
+      }
+    }
+  ]
+};
+
+        // Initialisation de la carte
+        const map = new maplibregl.Map({
+            container: 'map',
+            style: 'https://tiles.stadiamaps.com/styles/alidade_smooth/style.json',
+            center: caenCenter,
+            zoom: 14,
+            minZoom: 12, // Empêche de trop dézoomer
+            maxBounds: [ // Limite les mouvements autour de Caen
+                [-.45, 49.13],
+                [-.27, 49.23]
+            ]
+        });
+
+        // Définition des couleurs par catégorie
+        const categoryColors = {
+            'culture': '#E63946',
+            'education': '#4CAF50',
+            'commerce': '#2196F3'
+        };
+
+        // Ajouter la source et les couches une fois la carte chargée
+        map.on('load', function() {
+            // Ajouter la source de données GeoJSON
+            map.addSource('poi', {
+                type: 'geojson',
+                data: caenPOI
+            });
+
+            // Ajouter une couche pour chaque catégorie
+            const categories = ['culture', 'education', 'commerce'];
+            
+            categories.forEach(category => {
+                // Ajouter une couche de points pour chaque catégorie
+                map.addLayer({
+                    id: `${category}-points`,
+                    type: 'circle',
+                    source: 'poi',
+                    paint: {
+                        'circle-radius': 8,
+                        'circle-color': categoryColors[category],
+                        'circle-stroke-width': 2,
+                        'circle-stroke-color': 'white'
+                    },
+                    filter: ['==', ['get', 'category'], category]
+                });
+                
+                // Ajouter une couche de texte pour chaque catégorie
+                map.addLayer({
+                    id: `${category}-labels`,
+                    type: 'symbol',
+                    source: 'poi',
+                    layout: {
+                        'text-field': ['get', 'name'],
+                        'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+                        'text-size': 12,
+                        'text-offset': [0, 1.5],
+                        'text-anchor': 'top'
+                    },
+                    paint: {
+                        'text-color': '#1D3557',
+                        'text-halo-color': 'white',
+                        'text-halo-width': 1
+                    },
+                    filter: ['==', ['get', 'category'], category]
+                });
+                
+                // Ajouter des événements pour le survol et le clic
+                map.on('mouseenter', `${category}-points`, function() {
+                    map.getCanvas().style.cursor = 'pointer';
+                });
+                
+                map.on('mouseleave', `${category}-points`, function() {
+                    map.getCanvas().style.cursor = '';
+                });
+                
+                map.on('click', `${category}-points`, function(e) {
+                    const properties = e.features[0].properties;
+                    const coordinates = e.features[0].geometry.coordinates.slice();
+                    
+                    // Créer le contenu du popup
+                    const popupContent = `
+                        <div class="popup-content">
+                            <h3>${properties.name}</h3>
+                            <p>${properties.description}</p>
+                            <p><em>Catégorie: ${properties.category}</em></p>
+                        </div>
+                    `;
+                    
+                    // Créer et afficher le popup
+                    new maplibregl.Popup()
+                        .setLngLat(coordinates)
+                        .setHTML(popupContent)
+                        .addTo(map);
+                });
+            });
+            
+            // Gestion des filtres par catégorie
+            document.getElementById('toggle-culture').addEventListener('change', function(e) {
+                const visibility = e.target.checked ? 'visible' : 'none';
+                map.setLayoutProperty('culture-points', 'visibility', visibility);
+                map.setLayoutProperty('culture-labels', 'visibility', visibility);
+            });
+            
+            document.getElementById('toggle-education').addEventListener('change', function(e) {
+                const visibility = e.target.checked ? 'visible' : 'none';
+                map.setLayoutProperty('education-points', 'visibility', visibility);
+                map.setLayoutProperty('education-labels', 'visibility', visibility);
+            });
+            
+            document.getElementById('toggle-commerce').addEventListener('change', function(e) {
+                const visibility = e.target.checked ? 'visible' : 'none';
+                map.setLayoutProperty('commerce-points', 'visibility', visibility);
+                map.setLayoutProperty('commerce-labels', 'visibility', visibility);
+            });
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Établissements scolaires à Caen</title>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/3.3.1/maplibre-gl.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/3.3.1/maplibre-gl.js"></script>
+
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; }
+        #map { width: 100%; height: 100%; }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+
+    <script>
+        const map = new maplibregl.Map({
+            container: 'map',
+            style: 'https://demotiles.maplibre.org/style.json', // fond de carte gratuit
+            center: [-0.36, 49.183], // Caen
+            zoom: 13
+        });
+
+        map.addControl(new maplibregl.NavigationControl());
+
+        map.on('load', () => {
+            // Charger le fichier GeoJSON local
+            fetch('data.geojson') // Le fichier doit être servi par un serveur HTTP local
+                .then(response => response.json())
+                .then(data => {
+                    map.addSource('etablissements', {
+                        type: 'geojson',
+                        data: data
+                    });
+
+                    // Ajouter les points
+                    map.addLayer({
+                        id: 'etablissements-layer',
+                        type: 'circle',
+                        source: 'etablissements',
+                        paint: {
+                            'circle-radius': 6,
+                            'circle-color': '#2A9D8F',
+                            'circle-stroke-color': '#264653',
+                            'circle-stroke-width': 1
+                        }
+                    });
+
+                    // Ajouter popups au clic
+                    map.on('click', 'etablissements-layer', (e) => {
+                        const props = e.features[0].properties;
+                        const name = props.nom_etablissement || "Établissement sans nom";
+                        const ville = props.ville || "Caen";
+                        const popupContent = `
+                            <strong>${name}</strong><br>
+                            Ville : ${ville}
+                        `;
+
+                        new maplibregl.Popup()
+                            .setLngLat(e.features[0].geometry.coordinates)
+                            .setHTML(popupContent)
+                            .addTo(map);
+                    });
+
+                    map.on('mouseenter', 'etablissements-layer', () => {
+                        map.getCanvas().style.cursor = 'pointer';
+                    });
+                    map.on('mouseleave', 'etablissements-layer', () => {
+                        map.getCanvas().style.cursor = '';
+                    });
+                });
+        });
+    </script>
+</body>
+</html> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carte interactive de Caen</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/3.3.1/maplibre-gl.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/3.3.1/maplibre-gl.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+        }
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .control-panel {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1;
+            background-color: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            min-width: 200px;
+        }
+        .title {
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 16px;
+        }
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .toggle-container label {
+            margin-left: 8px;
+            cursor: pointer;
+        }
+        .category-title {
+            font-weight: bold;
+            margin-top: 10px;
+            margin-bottom: 5px;
+            border-top: 1px solid #eee;
+            padding-top: 8px;
+        }
+        .popup-content {
+            max-width: 300px;
+        }
+        .popup-content h3 {
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+        .popup-content p {
+            margin-top: 5px;
+        }
+        .legend {
+            margin-top: 15px;
+            padding-top: 8px;
+            border-top: 1px solid #eee;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+            font-size: 12px;
+        }
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            margin-right: 5px;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div class="control-panel">
+        <div class="title">Points d'intérêt de Caen</div>
+        
+        <div class="category-title">Filtres par catégorie</div>
+        <div class="toggle-container">
+            <input type="checkbox" id="toggle-culture" checked>
+            <label for="toggle-culture">Culture</label>
+        </div>
+        <div class="toggle-container">
+            <input type="checkbox" id="toggle-education" checked>
+            <label for="toggle-education">Éducation</label>
+        </div>
+        <div class="toggle-container">
+            <input type="checkbox" id="toggle-commerce" checked>
+            <label for="toggle-commerce">Commerce</label>
+        </div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #E63946;"></div>
+                <span>Culture</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #4CAF50;"></div>
+                <span>Éducation</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #2196F3;"></div>
+                <span>Commerce</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Coordonnées du centre de Caen (Place Saint-Sauveur)
+        const caenCenter = [-.36, 49.183];
+        
+        // Compléter ici pour importer le fichier geojson que je viens de te donner
+
+        // Initialisation de la carte
+        const map = new maplibregl.Map({
+            container: 'map',
+            style: 'https://demotiles.maplibre.org/style.json',
+            center: caenCenter,
+            zoom: 14,
+            minZoom: 12, // Empêche de trop dézoomer
+            maxBounds: [ // Limite les mouvements autour de Caen
+                [-.45, 49.13],
+                [-.27, 49.23]
+            ]
+        });
+
+        // Création d'une source de données pour les bâtiments
+        map.on('load', function() {
+            // Ajouter la source de données GeoJSON
+            map.addSource('buildings', {
+                type: 'geojson',
+                data: {
+                    type: 'FeatureCollection',
+                    features: culturalBuildings.map(building => {
+                        return {
+                            type: 'Feature',
+                            properties: {
+                                id: building.id,
+                                name: building.name,
+                                description: building.description
+                            },
+                            geometry: {
+                                type: 'Point',
+                                coordinates: building.coordinates
+                            }
+                        };
+                    })
+                }
+            });
+
+            // Ajouter une couche pour afficher les bâtiments (cercles)
+            map.addLayer({
+                id: 'buildings-layer',
+                type: 'circle',
+                source: 'buildings',
+                paint: {
+                    'circle-radius': 8,
+                    'circle-color': '#E63946',
+                    'circle-stroke-width': 2,
+                    'circle-stroke-color': 'white'
+                }
+            });
+
+            // Ajouter une couche pour les noms des bâtiments
+            map.addLayer({
+                id: 'buildings-labels',
+                type: 'symbol',
+                source: 'buildings',
+                layout: {
+                    'text-field': ['get', 'name'],
+                    'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+                    'text-size': 12,
+                    'text-offset': [0, 1.5],
+                    'text-anchor': 'top'
+                },
+                paint: {
+                    'text-color': '#1D3557',
+                    'text-halo-color': 'white',
+                    'text-halo-width': 1
+                }
+            });
+
+            // Gérer le clic sur un bâtiment pour afficher les informations
+            map.on('click', 'buildings-layer', function(e) {
+                const properties = e.features[0].properties;
+                const coordinates = e.features[0].geometry.coordinates.slice();
+                
+                // Créer le contenu du popup
+                const popupContent = `
+                    <div class="popup-content">
+                        <h3>${properties.name}</h3>
+                        <p>${properties.description}</p>
+                    </div>
+                `;
+                
+                // Créer et afficher le popup
+                new maplibregl.Popup()
+                    .setLngLat(coordinates)
+                    .setHTML(popupContent)
+                    .addTo(map);
+            });
+
+            // Changer le curseur quand on survole un bâtiment
+            map.on('mouseenter', 'buildings-layer', function() {
+                map.getCanvas().style.cursor = 'pointer';
+            });
+            map.on('mouseleave', 'buildings-layer', function() {
+                map.getCanvas().style.cursor = '';
+            });
+
+            // Gérer l'affichage/masquage des bâtiments
+            document.getElementById('toggle-buildings').addEventListener('change', function(e) {
+                const visibility = e.target.checked ? 'visible' : 'none';
+                map.setLayoutProperty('buildings-layer', 'visibility', visibility);
+                map.setLayoutProperty('buildings-labels', 'visibility', visibility);
+            });
+        });
+    </script>
+</body>
+</html> -->
+
+
