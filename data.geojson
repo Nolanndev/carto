@@ -28,8 +28,7 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -0.37076,
-          49.18277
+          -0.373170, 49.181895
         ]
       }
     },
@@ -44,8 +43,7 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -0.35431,
-          49.18944
+          -0.349475, 49.187677
         ]
       }
     },
@@ -60,8 +58,7 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -0.38941,
-          49.19778
+          -0.378599, 49.199182
         ]
       }
     },
@@ -76,8 +73,7 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -0.36534,
-          49.18243
+          -0.362520, 49.180230
         ]
       }
     },
@@ -92,8 +88,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -0.36198,
-          49.17963
+          -0.346982,
+          49.181673
         ]
       }
     },
@@ -116,70 +112,6 @@
     {
       "type": "Feature",
       "properties": {
-        "id": 8,
-        "name": "FRAC Normandie",
-        "description": "Fonds Régional d'Art Contemporain présentant des expositions d'art contemporain.",
-        "category": "culture"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -0.35843,
-          49.17753
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": 9,
-        "name": "Artothèque de Caen",
-        "description": "Espace d'exposition dédié à l'art contemporain, proposant également un service de prêt d'œuvres.",
-        "category": "culture"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -0.36196,
-          49.18369
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": 10,
-        "name": "Bibliothèque Alexis de Tocqueville",
-        "description": "Bibliothèque municipale moderne au design contemporain proposant de vastes collections et espaces de travail.",
-        "category": "culture"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -0.36183,
-          49.18667
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": 11,
-        "name": "Cinéma Lux",
-        "description": "Cinéma d'art et essai proposant des films indépendants et des rétrospectives.",
-        "category": "culture"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -0.36725,
-          49.18028
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
         "id": 12,
         "name": "Université de Caen Normandie - Campus 1",
         "description": "Campus principal de l'Université de Caen, reconstruit après la Seconde Guerre mondiale.",
@@ -188,8 +120,7 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -0.36645,
-          49.21303
+          -0.364413, 49.190170
         ]
       }
     },
@@ -204,8 +135,7 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -0.38507,
-          49.21244
+          -0.366827, 49.212576
         ]
       }
     },
@@ -220,8 +150,7 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -0.36881,
-          49.21363
+          -0.367294, 49.214654
         ]
       }
     },
@@ -236,88 +165,7 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -0.37266,
-          49.17783
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": 16,
-        "name": "Lycée Victor Hugo",
-        "description": "Lycée public général et technologique, situé au cœur de la ville.",
-        "category": "education"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -0.35995,
-          49.19136
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": 17,
-        "name": "Collège Pasteur",
-        "description": "Collège public situé dans le quartier du Calvaire Saint-Pierre.",
-        "category": "education"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -0.36940,
-          49.19761
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": 18,
-        "name": "École primaire Jean Moulin",
-        "description": "École élémentaire publique du centre-ville.",
-        "category": "education"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -0.35760,
-          49.18450
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": 19,
-        "name": "École Sainte-Thérèse",
-        "description": "École privée catholique dans le quartier de la Folie-Couvrechef.",
-        "category": "education"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -0.38200,
-          49.19650
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": 20,
-        "name": "IAE Caen - École Universitaire de Management",
-        "description": "École de commerce et de management de l'Université de Caen.",
-        "category": "education"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -0.36505,
-          49.21280
+          -0.372517, 49.176820
         ]
       }
     },
@@ -332,8 +180,7 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -0.35548,
-          49.20503
+          -0.364975, 49.209254
         ]
       }
     },
@@ -348,8 +195,7 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -0.32614,
-          49.17394
+          -0.302566, 49.160735
         ]
       }
     },
@@ -364,72 +210,7 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -0.35490,
-          49.18220
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": 24,
-        "name": "Monoprix Saint-Pierre",
-        "description": "Grand magasin en centre-ville proposant alimentation, mode et décoration.",
-        "category": "commerce"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -0.36118,
-          49.18239
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": 25,
-        "name": "Marché Saint-Sauveur",
-        "description": "Marché traditionnel se tenant sur la place Saint-Sauveur.",
-        "category": "commerce"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -0.36057,
-          49.18392
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": 26,
-        "name": "Centre Commercial Paul Doumer",
-        "description": "Galerie marchande en centre-ville avec diverses boutiques.",
-        "category": "commerce"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -0.36297,
-          49.18140
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": 27,
-        "name": "Zone Commerciale de Fleury-sur-Orne",
-        "description": "Zone commerciale au sud de Caen avec grandes enseignes et magasins spécialisés.",
-        "category": "commerce"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -0.38050,
-          49.15242
+          -0.350101, 49.177809
         ]
       }
     },
@@ -444,8 +225,7 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -0.38760,
-          49.17760
+          -0.383197, 49.170774
         ]
       }
     },
@@ -460,24 +240,143 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -0.38900,
-          49.17480
+          -0.380158, 49.170974
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "id": 30,
-        "name": "ESAM - École Supérieure d'Arts & Médias",
-        "description": "École d'art publique formant aux métiers artistiques et du design.",
+        "id": 31,
+        "name": "Fnac",
+        "description": "Magasin spécialisé dans la distribution de produits culturels et électroniques.",
+        "category": "commerce"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.364085, 49.182517
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 32,
+        "name": "Ikea",
+        "description": "Grand magasin de meubles et d'articles de décoration suédois.",
+        "category": "commerce"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.364031, 49.146008
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 33,
+        "name": "Mairie de Caen",
+        "description": "Hôtel de ville de Caen, situé dans l'Abbaye aux Hommes.",
+        "category": "culture"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.373362, 49.181183
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 35,
+        "name": "La Prairie",
+        "description": "Vaste espace vert au bord de l'Orne, lieu de promenade et d'événements.",
+        "category": "culture"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.35880,
+          49.17670
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 36,
+        "name": "Le Port de Caen",
+        "description": "Port de plaisance et bassin Saint-Pierre au cœur de la ville.",
+        "category": "culture"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.353155, 49.182508
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 37,
+        "name": "Université de Caen Normandie - Campus 2",
+        "description": "Campus scientifique de l'Université de Caen.",
         "category": "education"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -0.37170,
-          49.19030
+          -0.369031, 49.212244
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 38,
+        "name": "Université de Caen Normandie - Campus 3",
+        "description": "Campus de l'Université de Caen dédié aux sciences de la santé.",
+        "category": "education"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.357628, 49.149461
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 40,
+        "name": "MyDigitalSchool",
+        "description": "École supérieure spécialisée dans les métiers du digital et du numérique.",
+        "category": "education"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.350115, 49.200788
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 41,
+        "name": "Lycée Laplace",
+        "description": "Lycée public technique et professionnel spécialisé dans les formations industrielles.",
+        "category": "education"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.358642, 49.196650
         ]
       }
     }
