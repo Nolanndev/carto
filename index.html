@@ -4,17 +4,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Carte interactive de Caen</title>
+  <title>Carto - Caen en vue dynamique</title>
 
   <!-- CDN MaplibreGL JS -->
   <script src="https://unpkg.com/maplibre-gl@^5.5.0/dist/maplibre-gl.js"></script>
   <link href="https://unpkg.com/maplibre-gl@^5.5.0/dist/maplibre-gl.css" rel="stylesheet" />
 
-  <!-- Trash icon from Google Fonts Icons -->
-  <!-- <link rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=delete" /> -->
-
-
+  <!-- Google Fonts Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
 
   <link rel="stylesheet" href="style.css">
@@ -22,6 +18,12 @@
 
 <body>
   <div id="map"></div>
+
+  <div id="points-list">
+      <h4>📍 Points d'intérêt</h4>
+      <ul id="points-ul" style="list-style: none; padding: 0; margin: 0;"></ul>
+    </div>
+
 
   <div class="control-panel">
     <div class="title">Points d'intérêt de Caen</div>
@@ -51,17 +53,18 @@
         <span class="material-symbols-outlined">delete</span>
       </button>
     </div>
-  </div>
-  <div class="map-zoom-controls">
-    <button class="zoom-btn zoom-out" onclick="zoomOut()">
-      <span class="material-symbols-outlined">remove</span>
-    </button>
-    <button class="zoom-btn zoom-in" onclick="zoomIn()">
-      <span class="material-symbols-outlined">add</span>
-    </button>
-    <button class="zoom-btn zoom-reset" onclick="resetView()">
-      <span class="material-symbols-outlined">center_focus_weak</span>
-    </button>
+
+    <div class="map-zoom-controls">
+      <button class="zoom-btn zoom-out" onclick="zoomOut()" title="Dézoomer">
+        <span class="material-symbols-outlined">remove</span>
+      </button>
+      <button class="zoom-btn zoom-in" onclick="zoomIn()" title="Zoomer">
+        <span class="material-symbols-outlined">add</span>
+      </button>
+      <button class="zoom-btn zoom-reset" onclick="resetView()" title="Réinitialiser la vue">
+        <span class="material-symbols-outlined">center_focus_weak</span>
+      </button>
+    </div>
   </div>
 
   <div id="context-menu" class="hidden">

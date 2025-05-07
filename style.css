@@ -4,8 +4,6 @@
     --color-blue: #2196F3;
 }
 
-
-
 *,
 *::before,
 *::after {
@@ -27,6 +25,8 @@ body {
 }
 
 #map {
+    min-width: 90vw;
+    min-height: 90vh;
     width: 90vw;
     height: 90vh;
     border: 1px solid #ccc;
@@ -35,7 +35,98 @@ body {
 
 
 
+/* ===================================================================
+//  DDD    III  V   V        GGG     A    U   U   CCC   H   H  EEEEE
+//  D  D    I   V   V       G   G   A A   U   U  C   C  H   H  E
+//  D   D   I   V   V       G      A   A  U   U  C      HHHHH  EEE
+//  D   D   I    V V        G  GG  AAAAA  U   U  C      H   H  E
+//  D  D    I    V V        G   G  A   A  U   U  C   C  H   H  E
+//  DDD    III    V          GGGG  A   A   UUU    CCC   H   H  EEEEE
+// ===================================================================
+// * * * DIV GAUCHE */
 
+
+
+#points-list {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: white;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+    overflow-y: auto;
+    font-family: sans-serif;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    max-height: 90vh;
+    transition: transform 0.3s ease;
+    max-width: 30%;
+
+    h4 {
+        margin-bottom: 1rem;
+    }
+}
+
+#points-ul {
+    li {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        padding: 6px 8px;
+        border-left: 5px solid transparent;
+        border-bottom: 1px solid #eee;
+        transition: background 0.2s;
+        border-radius: .25rem;
+        color: #fff;
+        
+        &:not(:last-child) { 
+            margin-bottom: 3px;  
+         }
+
+        &:hover {
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        &.education { border-left-color: #4E79A7; }
+        &.commerce { border-left-color: #F28E2B; }
+        &.culture { border-left-color: #E15759; }
+
+        .material-symbols-outlined {
+            font-size: 20px;
+            color: #333;
+        }
+    }
+}
+
+@media(max-width: 950px) {
+    #points-list {
+        top: auto;
+        bottom: 5%;
+        left: 5%;
+        right: 5%;
+        max-height: 30vh;
+        max-width: 90%;
+        
+        h4 {
+            text-align: center;
+        }
+    }
+}
+
+
+
+/* =================================================================
+//  DDD    III  V   V       DDD    RRRR    OOO   III  TTTTT  EEEEE
+//  D  D    I   V   V       D  D   R   R  O   O   I     T    E
+//  D   D   I   V   V       D   D  R   R  O   O   I     T    EEE
+//  D   D   I    V V        D   D  RRRR   O   O   I     T    E
+//  D  D    I    V V        D  D   R  R   O   O   I     T    E
+//  DDD    III    V         DDD    R   R   OOO   III    T    EEEEE
+// =================================================================
+// * * * DIV DROITE */
 
 
 
@@ -50,54 +141,138 @@ body {
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     min-width: 200px;
+    
+    .category-title {
+        font-weight: bold;
+        margin-top: 10px;
+        margin-bottom: 5px;
+        border-top: 1px solid #eee;
+        padding-top: 8px;
+    }
+    
+    
+    .title {
+        font-weight: bold;
+        margin-bottom: 15px;
+        text-align: center;
+        font-size: 16px;
+    }
 }
 
-.category-title {
-    font-weight: bold;
-    margin-top: 10px;
-    margin-bottom: 5px;
-    border-top: 1px solid #eee;
-    padding-top: 8px;
-}
-
-
-.title {
-    font-weight: bold;
-    margin-bottom: 15px;
-    text-align: center;
-    font-size: 16px;
-}
 
 .toggle-container {
     display: flex;
     align-items: center;
     margin-bottom: 8px;
+    
+    label {
+        margin-left: 8px;
+        cursor: pointer;
+    }
+    
+    .legend-color {
+        width: 15px;
+        height: 15px;
+        margin-left: 5px;
+        border-radius: 50%;
+    }
 }
 
-.toggle-container label {
-    margin-left: 8px;
-    cursor: pointer;
+@media (max-width: 600px) {
+    .control-panel {
+        width: 60%;
+        bottom: 20px;
+        left: 20%;
+        right: 10%;
+
+        z-index: 1;
+        background-color: white;
+        padding: 15px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        min-width: 200px;
+        min-height: fit-content;
+    }
 }
 
-.legend-color {
-    width: 15px;
-    height: 15px;
-    margin-left: 5px;
-    border-radius: 50%;
+@media (max-width: 450px) {
+    .control-panel {
+        width: 90%;
+        left: 5%;
+        right: 5%;
+    }
 }
 
 
+/*               */
+/*     ROUTE     */
+/*               */
+
+.route-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin: 15px 0;
+    font-family: 'Roboto', 'Open Sans', Arial, sans-serif;
+
+    button {
+        padding: 10px 16px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        color: #fff;
+    }
+}
+
+#calculate-route {
+    background-color: #3498db;
+    min-width: 160px;
+
+    &:hover {
+        background-color: #2980b9;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transform: translateY(-2px);
+    }
+}
+
+.delete-route-btn {
+    background-color: #e74c3c;
+    padding: 10px 12px;
+
+    &:hover {
+        background-color: #c0392b;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transform: translateY(-2px);
+    }
+
+    .material-symbols-outlined {
+        font-size: 18px;
+        font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24;
+    }
+}
 
 
-
-
+/*              */
+/*     ZOOM     */
+/*              */
 
 .map-zoom-controls {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
     display: flex;
-    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
     gap: 8px;
     background-color: rgba(255, 255, 255, 0.9);
     padding: 8px;
@@ -119,19 +294,19 @@ body {
     transition: all 0.2s ease;
     color: #333;
     padding: 0;
-}
 
-.zoom-btn:hover {
-    background-color: #f5f5f5;
-    color: #3498db;
-    border-color: #3498db;
-    transform: translateY(-2px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
+    &:hover {
+        background-color: #f5f5f5;
+        color: #3498db;
+        border-color: #3498db;
+        transform: translateY(-2px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
 
-.zoom-btn:active {
-    transform: translateY(0);
-    background-color: #eaeaea;
+    &:active {
+        transform: translateY(0);
+        background-color: #eaeaea;
+    }
 }
 
 .zoom-reset {
@@ -140,81 +315,80 @@ body {
     margin-top: 4px;
 }
 
-/* Style pour le thème sombre */
-.dark-theme .map-zoom-controls {
-    background-color: rgba(44, 62, 80, 0.9);
-}
-
-.dark-theme .zoom-btn {
-    background-color: #34495e;
-    border-color: #2c3e50;
-    color: #ecf0f1;
-}
-
-.dark-theme .zoom-btn:hover {
-    background-color: #2c3e50;
-    color: #3498db;
-    border-color: #3498db;
-}
-
-.dark-theme .zoom-reset {
-    border-top-color: #2c3e50;
-}
 
 
-
-
-
+/* ===========================================
+//  PPPP    OOO   PPPP   U   U  PPPP    SSS
+//  P   P  O   O  P   P  U   U  P   P  S
+//  P   P  O   O  P   P  U   U  P   P   SSS
+//  PPPP   O   O  PPPP   U   U  PPPP       S
+//  P      O   O  P      U   U  P          S
+//  P       OOO   P       UUU   P      SSSS
+// ===========================================
+// * * * POPUPS */
 
 
 
 .maplibregl-popup {
+    font-family: 'Roboto', 'Open Sans', Arial, sans-serif;
     max-width: 300px;
-    font-family: 'Segoe UI', sans-serif;
 }
 
 .maplibregl-popup-content {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    padding: 16px;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    background-color: #ffffff;
+    border-left: 4px solid #8b8b8b;
     color: #333;
+    line-height: 1.5;
+
+    &.red {
+        border-left-color: #E63946;
+    }
+
+    &.green {
+        border-left-color: #4CAF50;
+    }
+
+    &.blue {
+        border-left-color: #2196F3;
+    }
+
+}
+
+.maplibregl-popup-close-button {
+    font-size: 16px;
+    color: #555;
+    padding: 5px 8px;
+    background: transparent;
+    border: none;
+    transition: color 0.2s;
+}
+
+.maplibregl-popup-close-button:hover {
+    color: #111;
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+}
+
+.maplibregl-popup-tip {
+    border-top-color: #ffffff;
+    filter: drop-shadow(0 4px 2px rgba(0, 0, 0, 0.1));
 }
 
 .maplibregl-popup-content h3 {
-    margin: 0;
+    margin: 0 0 10px 0;
     font-size: 16px;
-    color: #006C9C;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 4px;
+    font-weight: 600;
+    color: #2c3e50;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
 }
 
 .maplibregl-popup-content p {
-    margin: 8px 0 0;
+    margin: 8px 0;
     font-size: 14px;
-    line-height: 1.4;
-}
-
-
-
-
-
-
-
-
-@media (max-width: 600px) {
-    .control-panel {
-        width: 85%;
-        left: 5%;
-        right: 5%;
-
-        z-index: 1;
-        background-color: white;
-        padding: 15px;
-        border-radius: 5px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        min-width: 200px;
-    }
 }
 
 
@@ -228,6 +402,8 @@ body {
 //   CCC   LLLLL  III   CCC        DDD    R   R   OOO   III    T
 // =================================================================
 // * * * CLIC DROIT */
+
+
 
 #context-menu {
     position: absolute;
@@ -299,198 +475,16 @@ body {
 }
 
 
+/* ===================================================================
+//    A    N   N  III  M   M    A    TTTTT  III   OOO   N   N   SSS
+//   A A   NN  N   I   MM MM   A A     T     I   O   O  NN  N  S
+//  A   A  N N N   I   M M M  A   A    T     I   O   O  N N N   SSS
+//  AAAAA  N  NN   I   M   M  AAAAA    T     I   O   O  N  NN      S
+//  A   A  N   N   I   M   M  A   A    T     I   O   O  N   N      S
+//  A   A  N   N  III  M   M  A   A    T    III   OOO   N   N  SSSS
+// ===================================================================
+// * * * ANIMATIONS */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* Conteneur principal de la popup */
-.maplibregl-popup {
-    font-family: 'Roboto', 'Open Sans', Arial, sans-serif;
-    max-width: 300px;
-}
-
-/* Contenu de la popup */
-.maplibregl-popup-content {
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-    background-color: #ffffff;
-    border-left: 4px solid #8b8b8b;
-    color: #333;
-    line-height: 1.5;
-
-    &.red {
-        border-left-color: #E63946;
-    }
-
-    &.green {
-        border-left-color: #4CAF50;
-    }
-
-    &.blue {
-        border-left-color: #2196F3;
-    }
-
-}
-
-/* Bouton de fermeture */
-.maplibregl-popup-close-button {
-    font-size: 16px;
-    color: #555;
-    padding: 5px 8px;
-    background: transparent;
-    border: none;
-    transition: color 0.2s;
-}
-
-.maplibregl-popup-close-button:hover {
-    color: #111;
-    background-color: rgba(0, 0, 0, 0.05);
-    border-radius: 4px;
-}
-
-/* Flèche de la popup */
-.maplibregl-popup-tip {
-    border-top-color: #ffffff;
-    filter: drop-shadow(0 4px 2px rgba(0, 0, 0, 0.1));
-}
-
-/* Titre dans la popup (si vous ajoutez des balises h3 dans votre contenu) */
-.maplibregl-popup-content h3 {
-    margin: 0 0 10px 0;
-    font-size: 16px;
-    font-weight: 600;
-    color: #2c3e50;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 8px;
-}
-
-/* Style pour les paragraphes */
-.maplibregl-popup-content p {
-    margin: 8px 0;
-    font-size: 14px;
-}
-
-
-
-
-
-
-
-
-/* Style moderne pour les boutons d'itinéraire */
-
-/* Container des boutons */
-.route-controls {
-    display: flex;
-    gap: 10px;
-    margin: 15px 0;
-    font-family: 'Roboto', 'Open Sans', Arial, sans-serif;
-}
-
-/* Style commun pour tous les boutons */
-.route-controls button {
-    padding: 10px 16px;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 500;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    color: #fff;
-}
-
-/* Bouton de calcul d'itinéraire */
-#calculate-route {
-    background-color: #3498db;
-    min-width: 160px;
-}
-
-#calculate-route:hover {
-    background-color: #2980b9;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    transform: translateY(-2px);
-}
-
-#calculate-route:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* Bouton de suppression */
-.delete-route-btn {
-    background-color: #e74c3c;
-    padding: 10px 12px;
-}
-
-.delete-route-btn:hover {
-    background-color: #c0392b;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    transform: translateY(-2px);
-}
-
-.delete-route-btn:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* Style pour l'icône Material Symbols */
-.material-symbols-outlined {
-    font-size: 18px;
-    font-variation-settings:
-        'FILL' 0,
-        'wght' 400,
-        'GRAD' 0,
-        'opsz' 24;
-}
-
-/* Style pour les boutons désactivés */
-.route-controls button:disabled {
-    background-color: #95a5a6;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-    opacity: 0.7;
-}
-
-/* Animation de pulsation pour le bouton de calcul (optionnel) */
 @keyframes pulse {
     0% {
         box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.4);
@@ -499,7 +493,7 @@ body {
     70% {
         box-shadow: 0 0 0 10px rgba(52, 152, 219, 0);
     }
-
+    
     100% {
         box-shadow: 0 0 0 0 rgba(52, 152, 219, 0);
     }
@@ -508,3 +502,4 @@ body {
 .pulse-animation {
     animation: pulse 1.5s infinite;
 }
+

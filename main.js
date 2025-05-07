@@ -1,7 +1,49 @@
-// Coordonnées du centre de Caen (Place Saint-Sauveur)
-const caenCenter = [-.36, 49.183];
+// =======================================================================
+//   CCC    OOO   N   N   SSS   TTTTT    A    N   N  TTTTT  EEEEE   SSS
+//  C   C  O   O  NN  N  S        T     A A   NN  N    T    E      S
+//  C      O   O  N N N   SSS     T    A   A  N N N    T    EEE     SSS
+//  C      O   O  N  NN      S    T    AAAAA  N  NN    T    E          S
+//  C   C  O   O  N   N      S    T    A   A  N   N    T    E          S
+//   CCC    OOO   N   N  SSSS     T    A   A  N   N    T    EEEEE  SSSS
+// =======================================================================
+// * * * CONSTANTES
 
-// Initialisation de la carte
+
+
+const caenCenter = [-.36, 49.183];
+const categoryColors = {
+    'culture': {
+        color: '#E63946',
+        class: 'red',
+        icon: 'domain'
+    },
+    'education': {
+        color: '#4CAF50',
+        class: 'green',
+        icon: 'school'
+    },
+    'commerce': {
+        color: '#2196F3',
+        class: 'blue',
+        icon: 'storefront'
+    },
+};
+const categories = ['culture', 'education', 'commerce'];
+
+
+
+// ======================
+//  M   M    A    PPPP
+//  MM MM   A A   P   P
+//  M M M  A   A  P   P
+//  M   M  AAAAA  PPPP
+//  M   M  A   A  P
+//  M   M  A   A  P
+// ======================
+// * * * MAP
+
+
+
 const map = new maplibregl.Map({
     container: 'map',
     style: 'https://tiles.stadiamaps.com/styles/alidade_smooth/style.json',
@@ -14,32 +56,18 @@ const map = new maplibregl.Map({
     ]
 });
 
-// Définition des couleurs par catégorie
-const categoryColors = {
-    'culture': {
-        color: '#E63946',
-        class: 'red'
-    },
-    'education': {
-        color: '#4CAF50',
-        class: 'green'
-    },
-    'commerce': {
-        color: '#2196F3',
-        class: 'blue'
-    },
-};
-
 let mouseLngLat = null;
 let startPoint = null;
 let endPoint = null;
 let startMarker = null;
 let endMarker = null;
 
-// Ajouter la source et les couches une fois la carte chargée
 map.on('load', function () {
+    window.addEventListener('resize', () => {
+        map.resize();
+    });
 
-    fetch('data.geojson') // Le fichier doit être servi par un serveur HTTP local
+    fetch('data.geojson')
         .then(response => response.json())
         .then(data => {
             map.addSource('poi', {
@@ -47,11 +75,43 @@ map.on('load', function () {
                 data: data
             });
 
-            // Ajouter une couche pour chaque catégorie
-            const categories = ['culture', 'education', 'commerce'];
+            
+
+            const ul = document.getElementById('points-ul')
+            
+            data.features = data.features.slice().sort((a, b) => {
+                const catA = a.properties.category.toLowerCase();
+                const catB = b.properties.category.toLowerCase();
+            
+                if (catA < catB) return -1;
+                if (catA > catB) return 1;
+            
+                // Si les catégories sont identiques, trier par nom
+                const nameA = a.properties.name.toLowerCase();
+                const nameB = b.properties.name.toLowerCase();
+                return nameA.localeCompare(nameB);
+            });
+
+            data.features.forEach(feature => {
+                const category = feature.properties.category;
+                const li = document.createElement('li');
+                li.style.backgroundColor = categoryColors[category].color
+                // li.classList.add(categoryColors[category].color);
+                
+                li.innerHTML = `
+                <span class="material-symbols-outlined">${categoryColors[category].icon}</span>
+                <span>${feature.properties.name}</span>
+                `;
+                
+                li.addEventListener('click', (e) => {
+                    map.flyTo({ center: feature.geometry.coordinates, zoom: 16, pitch: 0, bearing: 0 });
+                });
+                
+                ul.appendChild(li);
+            });
+            document.getElementById("points-list").appendChild(ul);
 
             categories.forEach(category => {
-                // Ajouter une couche de points pour chaque catégorie
                 map.addLayer({
                     id: `${category}-points`,
                     type: 'circle',
@@ -65,7 +125,6 @@ map.on('load', function () {
                     filter: ['==', ['get', 'category'], category]
                 });
 
-                // Ajouter une couche de texte pour chaque catégorie
                 map.addLayer({
                     id: `${category}-labels`,
                     type: 'symbol',
@@ -85,29 +144,23 @@ map.on('load', function () {
                     filter: ['==', ['get', 'category'], category]
                 });
 
-                // Ajouter des événements pour le survol et le clic
-                map.on('mouseenter', `${category}-points`, function () {
+                map.on('mouseenter', `${category}-points`, () => {
                     map.getCanvas().style.cursor = 'pointer';
                 });
 
-                map.on('mouseleave', `${category}-points`, function () {
+                map.on('mouseleave', `${category}-points`, () => {
                     map.getCanvas().style.cursor = '';
                 });
 
                 map.on('click', `${category}-points`, function (e) {
                     const properties = e.features[0].properties;
                     const coordinates = e.features[0].geometry.coordinates.slice();
-
-                    // Créer le contenu du popup
-                    // <div class="popup-content ${categoryColors[category].class}">
                     const popupContent = `
-                    <div class="popup-content">
-                        <h3>${properties.name}</h3>
-                        <p>${properties.description}</p>
-                    </div>
-                `;
+                        <div class="popup-content">
+                            <h3>${properties.name}</h3>
+                            <p>${properties.description}</p>
+                        </div>`;
 
-                    // Créer et afficher le popup
                     new maplibregl.Popup()
                         .setLngLat(coordinates)
                         .setHTML(popupContent)
@@ -115,10 +168,11 @@ map.on('load', function () {
 
                     setTimeout(() => {
                         const popupElement = document.querySelector('.maplibregl-popup-content');
-                        if (popupElement) { popupElement.classList.add(categoryColors[category].class) }
+                        if (popupElement) {
+                            popupElement.classList.add(categoryColors[category].class);
+                        }
                     }, 0);
                 });
-
 
                 map.on('mousemove', function (e) {
                     mouseLngLat = e.lngLat;
@@ -126,27 +180,17 @@ map.on('load', function () {
             });
         });
 
-
-    // Gestion des filtres par catégorie
-    document.getElementById('toggle-culture').addEventListener('change', function (e) {
-        const visibility = e.target.checked ? 'visible' : 'none';
-        map.setLayoutProperty('culture-points', 'visibility', visibility);
-        map.setLayoutProperty('culture-labels', 'visibility', visibility);
-    });
-
-    document.getElementById('toggle-education').addEventListener('change', function (e) {
-        const visibility = e.target.checked ? 'visible' : 'none';
-        map.setLayoutProperty('education-points', 'visibility', visibility);
-        map.setLayoutProperty('education-labels', 'visibility', visibility);
-    });
-
-    document.getElementById('toggle-commerce').addEventListener('change', function (e) {
-        const visibility = e.target.checked ? 'visible' : 'none';
-        map.setLayoutProperty('commerce-points', 'visibility', visibility);
-        map.setLayoutProperty('commerce-labels', 'visibility', visibility);
+    // Filtres
+    ['culture', 'education', 'commerce'].forEach(category => {
+        document.getElementById(`toggle-${category}`).addEventListener('change', function (e) {
+            const visibility = e.target.checked ? 'visible' : 'none';
+            map.setLayoutProperty(`${category}-points`, 'visibility', visibility);
+            map.setLayoutProperty(`${category}-labels`, 'visibility', visibility);
+        });
     });
 });
 
+// Copie les coordonnées de la souris dans le presse-papier
 function copyCoordinates() {
     if (mouseLngLat) {
         const text = `${mouseLngLat.lng.toFixed(6)}, ${mouseLngLat.lat.toFixed(6)}`;
@@ -233,8 +277,6 @@ function calculateRoute() {
             return response.json()
         })
         .then(response => {
-
-            // Supprimer les anciennes sources/couches s'il y en a
             if (map.getLayer('route')) {
                 map.removeLayer('route');
             }
@@ -256,7 +298,6 @@ function calculateRoute() {
                     'line-cap': 'round'
                 },
                 paint: {
-                    // 'line-color': '#0074D9',
                     'line-color': '#ff0000',
                     'line-width': 4
                 }
@@ -269,7 +310,6 @@ function calculateRoute() {
 
         })
         .catch(error => {
-            // TODO Le toast d'erreur ne s'affiche pas en rouge
             console.error(`L'itinéraire n'a pas pu être calculé`, error)
             showToast(`L'itinéraire n'a pas pu être calculé`, 4000, true)
         })
@@ -303,9 +343,13 @@ function zoomOut() {
 function resetView() {
     map.flyTo({
         center: [caenCenter[0], caenCenter[1]],
-        zoom: 14
+        zoom: 14,
+        bearing: 0,
+        pitch: 0,
     });
+
 }
+
 
 
 // =================================================================
@@ -381,3 +425,28 @@ function showToast(message, error = false, duration = 2000) {
     // error ? toast.classList.add('toastError') : toast.classList.remove('toastError')
     setTimeout(() => toast.classList.remove('show'), duration)
 }
+
+
+
+// ===================================================================
+//  DDD    III  V   V        GGG     A    U   U   CCC   H   H  EEEEE
+//  D  D    I   V   V       G   G   A A   U   U  C   C  H   H  E
+//  D   D   I   V   V       G      A   A  U   U  C      HHHHH  EEE
+//  D   D   I    V V        G  GG  AAAAA  U   U  C      H   H  E
+//  D  D    I    V V        G   G  A   A  U   U  C   C  H   H  E
+//  DDD    III    V          GGGG  A   A   UUU    CCC   H   H  EEEEE
+// ===================================================================
+// * * * DIV GAUCHE
+
+
+
+// affiche / cache la liste des points
+document.querySelector('#points-list h4').addEventListener('click', (e) => {
+    let list = document.getElementById('points-ul')
+    if (list.style.display == 'none') {
+        list.style.display = 'block'
+    } else {
+        list.style.display = 'none'
+    }
+})
+
